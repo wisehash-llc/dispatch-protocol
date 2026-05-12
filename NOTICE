@@ -1,0 +1,6 @@
+dispatch-protocol
+Copyright 2026 WiseHash LLC
+
+This pattern library builds on prior work in agent infrastructure by
+Nate B. Jones and on contributions to the OpenClaw / OB1 ecosystem
+by Alan Shurafa. See README.md for full credit.
