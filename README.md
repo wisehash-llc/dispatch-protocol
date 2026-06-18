@@ -15,15 +15,16 @@ wisehash routes work between AI peers in five shapes — independent audit,
 cross-model peer review, bounded implementation, spec authorship under
 verification dominance, and parallel independent tracks. every dispatch
 carries an eight-element brief header that pre-flights the work before the
-peer agent loads context. the protocol exists because peer review between
-agents is a survival primitive: single-model reasoning is a single point of
-failure, and the only practical defense is a second agent reading the same
-sources independently and disagreeing in writing.
+peer agent loads context, and returns a result in a matching format. the
+protocol exists because peer review between agents is a survival primitive:
+single-model reasoning is a single point of failure, and the only practical
+defense is a second agent reading the same sources independently and
+disagreeing in writing.
 
 what this repo is:
 - a set of markdown documents
-- a brief template
-- one sanitized worked example
+- a brief template + a result format
+- one worked example per shape
 
 what this repo is not:
 - a runtime
@@ -35,25 +36,23 @@ the patterns make their own case through receipts.
 
 ## the five shapes
 
-each shape names a different routing decision. full descriptions live in
-[`patterns/shapes-overview.md`](patterns/shapes-overview.md); v0.2+ promotes
-each shape to its own pattern doc with variants and edge cases.
+each shape names a different routing decision and now has its own doc with
+variants, edge cases, a brief skeleton, and a worked example. the index and the
+decision table live in [`patterns/shapes-overview.md`](patterns/shapes-overview.md).
 
-- **shape a — independent verification audit.** a peer reads source artifacts,
-  runs verification commands, and writes findings. use when the work needs a
-  second pair of eyes that did not author the thing being audited.
-- **shape b — cross-model peer review.** one agent writes; a second agent
-  reviews independently against the same primary sources. use for load-bearing
-  PRs and spec drafts where single-model reasoning is a single point of failure.
-- **shape c — bounded implementation.** the dispatch-sender scopes the work;
-  the peer implements within tier-2 boundaries. use for new code following
-  established patterns, bounded refactors, config changes, dry-run runbooks.
-- **shape d — spec authorship under verification dominance.** the peer drafts a
-  spec where the verification logic dominates the design. use when *how do we
-  know this works* is harder than *how do we build it*.
-- **shape e — parallel independent tracks.** two agents work on independent
-  tracks simultaneously; the dispatch-sender integrates at the end. use when
-  two non-overlapping deliverables ship faster in parallel than sequentially.
+- **[shape a — independent verification audit](patterns/shape-a-independent-audit.md)**
+  — a peer reads source artifacts, runs verification, and writes findings. use
+  when the work needs a second pair of eyes that did not author the thing.
+- **[shape b — cross-model peer review](patterns/shape-b-cross-model-review.md)**
+  — one agent writes; a different model family reviews independently. use for
+  load-bearing PRs and specs where single-model reasoning is a single point of
+  failure.
+- **[shape c — bounded implementation](patterns/shape-c-bounded-implementation.md)**
+  — the sender scopes the work; the peer implements within tier-2 bounds.
+- **[shape d — spec authorship under verification dominance](patterns/shape-d-spec-under-verification.md)**
+  — the peer drafts a spec where the verification logic dominates the design.
+- **[shape e — parallel independent tracks](patterns/shape-e-parallel-tracks.md)**
+  — non-overlapping tracks run at once; the sender integrates at the end.
 
 ## the eight-element brief
 
@@ -74,6 +73,15 @@ elements are:
 picking the wrong shape is the most common drift source. the brief catches it
 before the peer loads context.
 
+## the return half
+
+a brief with no agreed result format produces reports that drift. the result
+format — verdict, confidence, cited findings, numbered amends, verification
+evidence, halt-markers — is the brief's mirror. it defines two verdict families
+(PASS / PASS-WITH-CONCERNS / FAIL for audits; GO / GO-WITH-AMENDS / REJECT for
+reviews, builds, and specs) and an intentionally-coarse compute-effort receipt.
+see [`patterns/dispatch-result-format.md`](patterns/dispatch-result-format.md).
+
 ## why peer review between agents
 
 a single agent reasoning alone is a single point of failure. context drift,
@@ -89,17 +97,33 @@ this protocol exists because the operator running these agents needed a way to
 route the second reading without re-explaining context every time. the brief
 template is that interface.
 
-## one worked example
+## parallel work
 
-[`examples/example-shape-a-audit.md`](examples/example-shape-a-audit.md) ships
-a single fully-realized shape a dispatch — the brief that went out and the
-report that came back. v0.2+ adds one example per shape.
+when two tracks run at once, isolation is mechanical, not optional: each writer
+runs in its own git worktree so concurrent edits never collide, and the sender
+integrates at the end. see
+[`patterns/worktree-isolation.md`](patterns/worktree-isolation.md).
+
+## worked examples
+
+[`examples/`](examples/) ships one fully-realized dispatch per shape — the brief
+that went out and the result that came back, all sanitized teaching artifacts:
+
+- [shape a — audit](examples/example-shape-a-audit.md)
+- [shape b — review](examples/example-shape-b-review.md)
+- [shape c — implementation](examples/example-shape-c-implementation.md)
+- [shape d — spec](examples/example-shape-d-spec.md)
+- [shape e — parallel](examples/example-shape-e-parallel.md)
 
 ## status
 
-- **version:** v0.1 — minimal-but-credible.
+- **version:** v0.2.
 - **license:** apache 2.0 ([LICENSE](LICENSE)).
 - **origin:** patterns emerged over several months of production use across
   mixed-model agent peers. the protocol is the codification.
+
+paired with [`wisehash-llc/mcp-patterns`](https://github.com/wisehash-llc/mcp-patterns),
+the two repos compose: dispatch-protocol routes work between AI peers;
+mcp-patterns wires the tools those peers reach for. either is useful on its own.
 
 operator's broader work lives at [wisehash.io](https://wisehash.io).
