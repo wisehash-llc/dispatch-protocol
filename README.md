@@ -34,6 +34,17 @@ what this repo is not:
 
 the patterns make their own case through receipts.
 
+## adapt these, don't install them
+
+this is a pattern library, not a framework. there is no runtime to deploy, no
+package to depend on, and nothing here that should become one. the shapes, the
+brief, and the result format are meant to be *read, adapted, and re-implemented*
+inside whatever harness you already run — copy the brief skeleton into your own
+dispatch tooling, keep the verdict vocabulary, drop what does not fit. building a
+new orchestration runtime around these patterns rebuilds the coupling the
+patterns exist to avoid; the value is the contract between peers, not any code
+that enforces it.
+
 ## the five shapes
 
 each shape names a different routing decision and now has its own doc with
@@ -70,6 +81,11 @@ elements are:
 7. **qualitybar** — verification commands required; halt-and-report discipline; evidence-cite expectations
 8. **blocked** — explicit halt-and-report instructions for conflicts, dep drops, scope ambiguity, or sandbox boundaries
 
+two operational adjuncts travel alongside the eight in the template — **sandbox**
+(workspace-write vs read-only) and **attribution** (which peer ran it) — but they
+are not part of the canonical eight; the eight are the pre-flight that prevents
+brief/work/report drift.
+
 picking the wrong shape is the most common drift source. the brief catches it
 before the peer loads context.
 
@@ -77,10 +93,35 @@ before the peer loads context.
 
 a brief with no agreed result format produces reports that drift. the result
 format — verdict, confidence, cited findings, numbered amends, verification
-evidence, halt-markers — is the brief's mirror. it defines two verdict families
+evidence, halt-markers, attribution — is the brief's mirror. it defines two verdict families
 (PASS / PASS-WITH-CONCERNS / FAIL for audits; GO / GO-WITH-AMENDS / REJECT for
 reviews, builds, and specs) and an intentionally-coarse compute-effort receipt.
 see [`patterns/dispatch-result-format.md`](patterns/dispatch-result-format.md).
+
+## the dispatch lifecycle
+
+brief out, work in the middle, result back, amends integrated — the loop the
+contract enforces:
+
+```mermaid
+flowchart TD
+    A["sender"] --> B["brief header<br/>shape · source · scope · output · gates · attribution"]
+    B --> C["peer<br/>reads sources, verifies, writes findings"]
+    C --> D["result artifact"]
+    D --> E["verdict"]
+    D --> F["confidence"]
+    D --> G["findings + required amends"]
+    D --> H["verification evidence"]
+    D --> I["attribution + halt-markers"]
+    E --> J{"verdict family"}
+    J --> K["audits:<br/>PASS / PASS-WITH-CONCERNS / FAIL"]
+    J --> L["reviews, builds, specs:<br/>GO / GO-WITH-AMENDS / REJECT"]
+    L --> M{"GO-WITH-AMENDS?"}
+    M -- "yes" --> N["sender integrates required amends<br/>same session, within scope"]
+    N --> O["integrator accepts or re-dispatches"]
+    N -. "optional re-review" .-> C
+    M -- "no" --> O
+```
 
 ## why peer review between agents
 
@@ -115,9 +156,13 @@ that went out and the result that came back, all sanitized teaching artifacts:
 - [shape d — spec](examples/example-shape-d-spec.md)
 - [shape e — parallel](examples/example-shape-e-parallel.md)
 
+the examples omit the optional **attribution** field for brevity; see
+[`patterns/dispatch-result-format.md`](patterns/dispatch-result-format.md) for
+where it goes and when it earns its slot.
+
 ## status
 
-- **version:** v0.2.
+- **version:** v0.2.1.
 - **license:** apache 2.0 ([LICENSE](LICENSE)).
 - **origin:** patterns emerged over several months of production use across
   mixed-model agent peers. the protocol is the codification.

@@ -19,6 +19,9 @@ a dispatch result carries, in order:
 5. **verification evidence** — the commands run and their output verbatim, or an
    explicit statement that no executable check was available.
 6. **halt-markers fired** — every BLOCKED condition the peer hit, named.
+7. **attribution** *(recommended; most valuable for multi-agent audit trails)* —
+   which peer produced this result (durable role-codename + the engine of record)
+   and a coarse timestamp, so the result is traceable in an audit trail.
 
 ## the two verdict families
 
@@ -65,6 +68,23 @@ waits — and the result says so explicitly.
 a result may carry a one-line effort receipt so the operator can see what the
 dispatch cost in rough terms — for example `effort: high, wall: minutes-scale`.
 keep it coarse on purpose. a public or shared result does **not** carry raw
-token counts, exact model name-and-version, or anything from which operating
-economics could be reconstructed. the receipt signals magnitude, not a meter
-reading. coarseness here is a feature, not an omission.
+token counts or anything from which operating economics could be reconstructed.
+the receipt signals magnitude, not a meter reading; the engine of record is named
+in attribution below, which is authorship, not economics. coarseness here is a
+feature, not an omission.
+
+## attribution and the audit trail
+
+attribution is **recommended, not mandatory** — a solo-agent dispatch rarely
+needs it; a multi-agent setup, where two peers can share a model, needs it to
+answer *which peer ran this?*. when carried, a result names who produced it: the
+peer's durable **role-codename** — the stable identity that accrues an audit
+history across model swaps — and the **engine of record** for this specific run.
+the two are different on purpose: the role-codename answers *which peer*, the
+engine answers *which model wrote this one*. a frozen result is a point-in-time
+snapshot, so naming the engine adds no maintenance churn and makes later
+authorship archaeology exact — though a **public or shared result may coarsen the
+engine to a class** (for example "a frontier model") when the exact version is
+sensitive. keep attribution distinct from the compute-effort receipt above:
+attribution identifies the author; the effort receipt signals magnitude and
+carries no raw token counts or operating economics.
