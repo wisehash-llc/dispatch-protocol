@@ -13,6 +13,10 @@ work, and report.
 ## QualityBar  — verification commands required; halt-and-report discipline; evidence-cite expectations
 ## BLOCKED     — explicit halt-and-report instructions for conflicts, dep drops, scope ambiguity, or sandbox boundaries
 ## Sandbox     — workspace-write | read-only; cwd shift if needed
+## Attribution — sender + peer role-codename (durable role name, e.g. "reviewer" / "builder"), so the result traces to who ran it
+
+> `Sandbox` and `Attribution` are operational adjuncts — they travel with the
+> dispatch but are not part of the canonical eight elements above.
 
 ## Context
 [the why — what the work is for, what just happened, what the peer needs to know to start cold]
@@ -77,6 +81,13 @@ element is wrong.
 
 - **sandbox** — workspace-write vs read-only. universal across harnesses.
   when the peer needs a cwd shift to enter the workspace, name it here.
+
+- **attribution** — name the sender and the peer's durable role-codename, not
+  just the model. the model in `profile` is the engine of record for this run;
+  the role-codename is the stable identity that accrues the audit trail across
+  model swaps. a multi-agent operator has to answer "which peer ran this?" from
+  the brief and result alone — the model name cannot answer it, because two
+  peers can share a model.
 
 ---
 
